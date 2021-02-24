@@ -215,12 +215,13 @@ class SuffixArray():
         """
         compare = lambda x,y: 0 if self.document[x:x + len(y)] == y else (-1 if self.document[x:x + len(y)] < y else 1)
         
-        return [mybinsearch(self.suffix, searchstr, compare)]
+        return [mybinsearch(self.suffix, searchstr, compare)-1]
 
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
         """
+        compare = lambda x,y: 0 if self.document[x:x + len(y)] == y else (-1 if self.document[x:x + len(y)] < y else 1)
         return [mybinsearch(self.suffix, searchstr, compare)]  != -1
 
 # 40 Points
