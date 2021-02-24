@@ -224,8 +224,7 @@ class SuffixArray():
         """
         Returns true of searchstr is coontained in document.
         """
-        compare = lambda x,y: 0 if self.document[x:x + len(y)] == y else (-1 if self.document[x:x + len(y)] < y else 1)
-        return [mybinsearch(self.suffix, searchstr, compare)]  != -1
+        return searchstr in self.document
 
 # 40 Points
 def test3():
