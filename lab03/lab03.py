@@ -213,12 +213,9 @@ class SuffixArray():
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-        lst = []
-        for il in self.suffix:
-            text = self.document[il:il+len(searchstr)]
-            if text == searchstr:
-                lst.append(il)
-        return lst
+        compare = lambda x,y: 0 if self.document[x:x + len(y)] == y else (-1 if self.document[x:x + len(y)] < y else 1)
+        
+        return [mybinsearch(self.suffix, searchstr, compare)-1]
 
     def contains(self, searchstr: str):
         """
