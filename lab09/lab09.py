@@ -198,6 +198,24 @@ class HBStree:
         if timetravel < 0 or timetravel >= len(self.root_versions):
             raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
         # BEGIN SOLUTION
+        if timetravel < 0 or timetravel >= len(self.root_versions):
+            raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
+        # BEGIN SOLUTION
+        head = self.root_versions[-1-timetravel]
+        def create(head,list):
+            if head == None:
+                return list
+            if head.left != None:
+                list = create(head.left,list)
+            if head.right != None:
+                list.append(head.val)
+                list = create(head.right,list)
+                return list
+            list.append(head.val)
+            return list
+        l = create(head,[])
+        iter = l.__iter__()
+        return iter
         # END SOLUTION
 
     @staticmethod
