@@ -53,6 +53,16 @@ class HBStree:
         KeyError, if key does not exist.
         """
         # BEGIN SOLUTION
+        cur = self.root_versions[len(self.root_versions)-1]
+        while(True):
+            if cur.val == key:
+                return key
+            elif cur.left != None and key<cur.val:
+                cur = cur.left
+            elif cur.right != None and key>cur.val:
+                cur = cur.right
+            else:
+                raise KeyError
         # END SOLUTION
 
     def __contains__(self, el):
@@ -60,6 +70,11 @@ class HBStree:
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
+        try:
+            self.__getitem__(el)
+            return True
+        except:
+            return False
         # END SOLUTION
 
     def insert(self,key):
@@ -69,11 +84,49 @@ class HBStree:
         from creating a new version.
         """
         # BEGIN SOLUTION
+        def insert_help(node, key):
+            if not node:
+                return self.INode(key,None,None)
+            elif key>node.val:
+                return self.INode(node.val, node.left, insert_help(node.right,key))
+            elif key<node.val:
+                return self.INode(node.val,insert_help(node.left,key),node.right)
+            else:
+                return self.INode(key,None,None)
+        if not self.__contains__(key):
+            if len(self.root_versions)<=1:
+                self.root_versions.append(self.INode(key,None,None))
+            else:
+                self.root_versions.append(insert_help(self.root_versions[-1],key))
         # END SOLUTION
 
     def delete(self,key):
         """Delete key from the tree, creating a new version of the tree. If key does not exist in the current version of the tree, then do nothing and refrain from creating a new version."""
         # BEGIN SOLUTION
+        def delete_help(node,key):
+            if key>node.val:
+                return self.INode(node.val,node.left,delete_help(node.right,key))
+            elif key<node.val:
+                return self.INode(node.val, delete_help(node.left,key),node.right)
+            else:
+                if not(node.left or node.right):
+                    return None
+                elif node.right and not node.left:
+                    return node.right
+                elif node.left and not node.right:
+                    return node.left
+                else:
+                    next_head = node.left
+                    while True:
+                        if not next_head.right:
+                            break
+                        next_head = next_head.right
+                    return self.INode(next_head.val,delete_help(node.left,next_head.val),node.right)
+        if self.__contains__(key):
+            if len(self.root_versions) == 1:
+                self.root_versions.append(None)
+            else:
+                self.root_versions.append(delete_help(self.root_versions[-1],key))
         # END SOLUTION
 
     @staticmethod
@@ -145,6 +198,24 @@ class HBStree:
         if timetravel < 0 or timetravel >= len(self.root_versions):
             raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
         # BEGIN SOLUTION
+        if timetravel < 0 or timetravel >= len(self.root_versions):
+            raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
+        # BEGIN SOLUTION
+        head = self.root_versions[-1-timetravel]
+        def create(head,list):
+            if head == None:
+                return list
+            if head.left != None:
+                list = create(head.left,list)
+            if head.right != None:
+                list.append(head.val)
+                list = create(head.right,list)
+                return list
+            list.append(head.val)
+            return list
+        l = create(head,[])
+        iter = l.__iter__()
+        return iter
         # END SOLUTION
 
     @staticmethod
