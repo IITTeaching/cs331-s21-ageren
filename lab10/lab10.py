@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -31,16 +34,68 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
+        cur = t
+        num = AVLTree.Node.height(cur.right)-AVLTree.Node.height(cur.left)
+        if num<-1:
+            if AVLTree.Node.height(cur.left.right)-AVLTree.Node.height(cur.left.left) == 1:
+                AVLTree.Node.rotate_left(cur.left)
+            AVLTree.Node.rotate_right(cur)
+        elif num>1:
+            if AVLTree.Node.height(cur.right.right)-AVLTree.Node.height(cur.right.left) == -1:
+                AVLTree.Node.rotate_right(cur.right)
+            AVLTree.Node.rotate_left(cur)
         ### END SOLUTION
 
     def add(self, val):
         assert(val not in self)
         ### BEGIN SOLUTION
+        if not self.root:
+            self.root = self.Node(val)
+        else:
+            arr = []
+            cur = self.root
+            while True:
+                arr.append(cur)
+                if val > cur.val:
+                    if not cur.right:
+                        cur.right = self.Node(val)
+                        break
+                    cur = cur.right
+                elif val < cur.val:
+                    if not cur.left:
+                        cur.left = self.Node(val)
+                        break
+                    cur = cur.left
+            for i in range(len(arr)-1,-1,-1):
+                self.rebalance(arr[i])
         ### END SOLUTION
 
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
+        def del_help(node, val):
+            if node == None:
+                return node
+            else:
+                if val > node.val:
+                    node.right = del_help(node.right, val)
+                elif val < node.val:
+                    node.left = del_help(node.left, val)
+                else:
+                    if node.right == None:
+                        return node.left
+                    elif node.left == None:
+                        return node.right
+                    cur = node.right
+                    while cur.left:
+                        cur = cur.left
+                    node.val = cur.val
+                    node.right = del_help(node.right, cur.val)
+                self.rebalance(node)
+                return node
+        #rec = recur(self.root, val)
+        self.root = del_help(self.root, val)
+        self.size -= 1
         ### END SOLUTION
 
     def __contains__(self, val):
