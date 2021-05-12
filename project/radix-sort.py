@@ -9,8 +9,8 @@ def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
 def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     #make inner function counting_sort to use for radix
     def counting_sort(idx, lst):
-        counts = [0] * 128
-        new = [None] * len(lst)
+        counts = [0] * 127
+        new = [0] * len(lst)
         counter = 0
         #loop through list to fill up first list with decoded number vals
         while counter<len(lst):
